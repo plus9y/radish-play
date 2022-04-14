@@ -41,12 +41,12 @@ _EOT_
 show_all_stations() {
   # Radiru
   echo "Record type: nhk"
-  list=$(curl --silent "https://www.nhk.or.jp/radio/config/config_v5.7.3_radiru_and.xml")
-  cnt=$(echo "${list}" | xmllint --xpath "count(/radiru_config/area)" - 2> /dev/null)
+  list=$(curl --silent "https://www.nhk.or.jp/radio/config/config_web.xml")
+  cnt=$(echo "${list}" | xmllint --xpath "count(/radiru_config/stream_url/data/area)" - 2> /dev/null)
   cntarray=$(echo "${cnt}" | awk '{for (i=1; i<=$1; i++) print i}')
   for i in ${cntarray}; do
-    echo "  $(echo "${list}" | xmllint --xpath "concat(string((/radiru_config/area)[${i}]/@id), '-r1: ', string((/radiru_config/area)[${i}]/@name), ' R1')" - 2> /dev/null)"
-    echo "  $(echo "${list}" | xmllint --xpath "concat(string((/radiru_config/area)[${i}]/@id), '-fm: ', string((/radiru_config/area)[${i}]/@name), ' FM')" - 2> /dev/null)"
+    echo "  $(echo "${list}" | xmllint --xpath "concat(string((/radiru_config/stream_url/data/area)[${i}]), '-r1: ', string((/radiru_config/stream_url/data/areajp)[${i}]), ' R1')" - 2> /dev/null)"
+    echo "  $(echo "${list}" | xmllint --xpath "concat(string((/radiru_config/stream_url/data/area)[${i}]), '-fm: ', string((/radiru_config/stream_url/data/area)[${i}]), ' FM')" - 2> /dev/null)"
   done
   echo "  r2: R2"
   echo ""
@@ -204,12 +204,12 @@ get_hls_uri_nhk() {
 
   if [ "${station_id}" = "r2" ]; then
     # R2
-    curl --silent "https://www.nhk.or.jp/radio/config/config_v5.7.3_radiru_and.xml" | xmllint --xpath "string(/radiru_config/config[@key='url_stream_r2']/value[1]/@text)" - 2> /dev/null
+    curl --silent "https://www.nhk.or.jp/radio/config/config_web.xml" | xmllint --nocdata --xpath "/radiru_config/stream_url/data[area='tokyo']/r2hls/text()" - 2> /dev/null
   else
     # Split area and channel
     area="$(echo "${station_id}" | cut -d '-' -f 1)"
     channel="$(echo "${station_id}" | cut -d '-' -f 2)"
-    curl --silent "https://www.nhk.or.jp/radio/config/config_v5.7.3_radiru_and.xml" | xmllint --xpath "string(/radiru_config/area[@id='${area}']/config[@key='url_stream_${channel}']/value[1]/@text)" - 2> /dev/null
+    curl --silent "https://www.nhk.or.jp/radio/config/config_web.xml" | xmllint --nocdata --xpath "/radiru_config/stream_url/data[area='${area}']/${channel}hls/text()" - 2> /dev/null
   fi
 }
 
