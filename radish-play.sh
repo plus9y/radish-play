@@ -145,7 +145,7 @@ logout_radiko() {
 #   1: Failed
 #######################################
 radiko_authorize() {
-  radiko_session=$1  
+  radiko_session=$1
 
   # Define authorize key value (from http://radiko.jp/apps/js/playerCommon.js)
   RADIKO_AUTHKEY_VALUE="bcd151073c03b352e1ef2fd66c32209da9ca0afa"
@@ -209,7 +209,7 @@ get_hls_uri_nhk() {
     # Split area and channel
     area="$(echo "${station_id}" | cut -d '-' -f 1)"
     channel="$(echo "${station_id}" | cut -d '-' -f 2)"
-    ccurl --silent "https://www.nhk.or.jp/radio/config/config_web.xml" | xmllint --nocdata --xpath "/radiru_config/stream_url/data[area='${area}']/${channel}hls/text()" - 2> /dev/null
+    curl --silent "https://www.nhk.or.jp/radio/config/config_web.xml" | xmllint --nocdata --xpath "/radiru_config/stream_url/data[area='${area}']/${channel}hls/text()" - 2> /dev/null
   fi
 }
 
