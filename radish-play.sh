@@ -209,7 +209,7 @@ get_hls_uri_nhk() {
     # Split area and channel
     area="$(echo "${station_id}" | cut -d '-' -f 1)"
     channel="$(echo "${station_id}" | cut -d '-' -f 2)"
-    ccurl --silent "https://www.nhk.or.jp/radio/config/config_web.xml" | xmllint --nocdata --xpath "/radiru_config/stream_url/data[area='${area}']/${channel}hls/text()" - 2> /dev/null
+    curl --silent "https://www.nhk.or.jp/radio/config/config_web.xml" | xmllint --nocdata --xpath "/radiru_config/stream_url/data[area='${area}']/${channel}hls/text()" - 2> /dev/null
   fi
 }
 
